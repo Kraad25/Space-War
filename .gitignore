@@ -1,0 +1,6 @@
+
+*.vsidx
+.vs/Space_War/v17/.suo
+*.md
+*.pyproj
+*.sln
