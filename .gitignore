@@ -4,3 +4,7 @@
 *.md
 *.pyproj
 *.sln
+*.json
+*.sqlite
+.vs/Space_War/v17/.wsuo
+*.pyc
