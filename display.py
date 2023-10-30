@@ -14,33 +14,48 @@ class Display:
         self.player_2_rect.topleft = (790, 250)
 
     def draw_territory(self):
-        pygame.draw.line(self.SCREEN, self.mediator.data.line_color, (445,0), (455,500), width=5)
+        pygame.draw.line(self.SCREEN, self.mediator.data.line_color, (450,0), (450,500), width=10)
 
     def players_starting_position(self):
         self.SCREEN.blit(self.mediator.data.player_1, self.player_1_rect)
         self.SCREEN.blit(self.mediator.data.player_2, self.player_2_rect)
 
-        pygame.draw.rect(self.SCREEN, (255, 0, 0), self.player_1_rect, 2)  # Red rectangle around player 1
-        pygame.draw.rect(self.SCREEN, (0, 0, 255), self.player_2_rect, 2)  # Blue rectangle around player 2
+    def set_player_positions(self, player1_x, player1_y, player2_x, player2_y):
+        self.player_1_rect.topleft = (player1_x, player1_y)
+        self.player_2_rect.topleft = (player2_x, player2_y)
 
     def player_1_move(self):
         keys = pygame.key.get_pressed()
 
-        # Player 1 controls (W and S)
-        if keys[pygame.K_w] and self.player_1_rect.y - self.mediator.data.VELOCITY >0:
+        # Player 1 controls (W, A, D and S)
+        if keys[pygame.K_w] and self.player_1_rect.y - self.mediator.data.VELOCITY >30:
             self.player_1_rect.y -= self.mediator.data.VELOCITY
             
         if keys[pygame.K_s] and self.player_1_rect.y + self.mediator.data.VELOCITY < 450:
             self.player_1_rect.y += self.mediator.data.VELOCITY
 
+        if keys[pygame.K_a] and self.player_1_rect.x - self.mediator.data.VELOCITY > 10:
+            self.player_1_rect.x -= self.mediator.data.VELOCITY
+
+        if keys[pygame.K_d] and self.player_1_rect.x + self.mediator.data.VELOCITY < 380:
+            self.player_1_rect.x += self.mediator.data.VELOCITY
+
+
     def player_2_move(self):
         keys = pygame.key.get_pressed()
 
-        # Player 2 controls (1 and 2)
-        if keys[pygame.K_UP] and self.player_2_rect.y - self.mediator.data.VELOCITY >0:
+        # Player 2 controls (up, down, left and right arrow keys)
+        if keys[pygame.K_UP] and self.player_2_rect.y - self.mediator.data.VELOCITY >30:
             self.player_2_rect.y -= self.mediator.data.VELOCITY
-        if keys[pygame.K_DOWN] and self.player_2_rect.y - self.mediator.data.VELOCITY < 450:
+
+        if keys[pygame.K_DOWN] and self.player_2_rect.y - self.mediator.data.VELOCITY < 440:
             self.player_2_rect.y += self.mediator.data.VELOCITY
+
+        if keys[pygame.K_LEFT] and self.player_2_rect.x - self.mediator.data.VELOCITY > 470:
+            self.player_2_rect.x -= self.mediator.data.VELOCITY
+
+        if keys[pygame.K_RIGHT] and self.player_2_rect.x + self.mediator.data.VELOCITY < 840:
+            self.player_2_rect.x += self.mediator.data.VELOCITY            
 
     def fire_bullets(self, p1_bullets, p2_bullets):
         for bullet in p1_bullets:
@@ -66,3 +81,26 @@ class Display:
 
         for bullet in p2_bullets:
             pygame.draw.ellipse(self.SCREEN, self.mediator.data.p2_bullet, bullet)
+
+    def check_winner(self):
+        if self.mediator.player1_health.current_health <=0:
+            self.mediator.data.winner_text = "Player 2 Wins!"
+            self.mediator.data.game = True
+
+        if self.mediator.player2_health.current_health <=0:
+            self.mediator.data.winner_text = "Player 1 Wins!"
+            self.mediator.data.game = True
+
+        if self.mediator.data.winner_text != "":
+            pass
+
+    def show_winner(self):
+        self.SCREEN.blit(self.mediator.data.bg, (0, 0))
+        winner_img = self.mediator.data.WINNER_TEXT_FONT.render(self.mediator.data.winner_text, True, self.mediator.data.WINNER_TEXT_COLOR)
+        pygame.draw.rect(self.SCREEN, (0, 0, 0), (self.mediator.data.WIDTH//2 - 100, self.mediator.data.HEIGHT//2 - 60, 200, 50))
+        self.SCREEN.blit(winner_img, (self.mediator.data.WIDTH//2 - 100, self.mediator.data.HEIGHT//2 - 50))
+    
+        again_text = 'Play Again ?'
+        again_img = self.mediator.data.WINNER_TEXT_FONT.render(again_text, True, self.mediator.data.WINNER_TEXT_COLOR)
+        pygame.draw.rect(self.SCREEN, (0, 0, 0), self.mediator.data.again_rectangle)
+        self.SCREEN.blit(again_img, (self.mediator.data.WIDTH//2 - 80, self.mediator.data.HEIGHT//2 + 10))

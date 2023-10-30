@@ -24,7 +24,21 @@ class Data:
         self.player_2 = pygame.image.load("assets/ship_2.png")
         self.player_2 = pygame.transform.scale(self.player_2, (self.SPACESHIP_SIZE))
 
+        self.player1_start_x = 110
+        self.player1_start_y = 250
+
+        self.player2_start_x = 790
+        self.player2_start_y = 250
+
         self.line_color = "Black"
         self.p1_bullet = "Red"
         self.p2_bullet = "Green"
+
+        self.game = False
+        self.clicked = False
+        self.winner_text=""
+        self.WINNER_TEXT_FONT = pygame.font.SysFont("comicsans", 40)
+        self.WINNER_TEXT_COLOR = (255, 255, 255)
+        self.again_rectangle = pygame.Rect(self.WIDTH//2 - 80, self.HEIGHT//2, 160, 50)
+    
 

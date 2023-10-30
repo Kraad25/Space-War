@@ -17,10 +17,8 @@ class HealthBar:
 
     def draw(self):
         # Draw the background of the health bar
-        pygame.draw.rect(self.screen, (255, 0, 0), (self.x, self.y, self.width, self.height))
-
-        # Calculate the width of the health bar based on the current health
-        health_width = (self.current_health / self.max_health) * self.width
-
+        pygame.draw.rect(self.screen, "Red", (self.x, self.y, self.width, self.height))
+        # Health Ratio
+        health_ratio = (self.current_health / self.max_health) 
         # Draw the actual health bar
-        pygame.draw.rect(self.screen, (0, 255, 0), (self.x, self.y, self.width, self.height))
+        pygame.draw.rect(self.screen, "Green", (self.x, self.y, self.width*health_ratio, self.height))
