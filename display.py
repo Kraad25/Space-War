@@ -27,34 +27,34 @@ class Display:
     def player_1_move(self):
         keys = pygame.key.get_pressed()
 
-        # Player 1 controls (W, A, D and S)
-        if keys[pygame.K_w] and self.player_1_rect.y - self.mediator.data.VELOCITY >30:
+        # Player 1 controls (W, A, D and S.... Space to Fire)
+        if keys[self.mediator.data.player_1_controls.move_up] and self.player_1_rect.y - self.mediator.data.VELOCITY >30:
             self.player_1_rect.y -= self.mediator.data.VELOCITY
             
-        if keys[pygame.K_s] and self.player_1_rect.y + self.mediator.data.VELOCITY < 450:
+        if keys[self.mediator.data.player_1_controls.move_down] and self.player_1_rect.y + self.mediator.data.VELOCITY < 450:
             self.player_1_rect.y += self.mediator.data.VELOCITY
 
-        if keys[pygame.K_a] and self.player_1_rect.x - self.mediator.data.VELOCITY > 10:
+        if keys[self.mediator.data.player_1_controls.move_left] and self.player_1_rect.x - self.mediator.data.VELOCITY > 10:
             self.player_1_rect.x -= self.mediator.data.VELOCITY
 
-        if keys[pygame.K_d] and self.player_1_rect.x + self.mediator.data.VELOCITY < 380:
+        if keys[self.mediator.data.player_1_controls.move_right] and self.player_1_rect.x + self.mediator.data.VELOCITY < 380:
             self.player_1_rect.x += self.mediator.data.VELOCITY
 
 
     def player_2_move(self):
         keys = pygame.key.get_pressed()
 
-        # Player 2 controls (up, down, left and right arrow keys)
-        if keys[pygame.K_UP] and self.player_2_rect.y - self.mediator.data.VELOCITY >30:
+        # Player 2 controls (up, down, left and right arrow keys... LALT to fire)
+        if keys[self.mediator.data.player_2_controls.move_up] and self.player_2_rect.y - self.mediator.data.VELOCITY >30:
             self.player_2_rect.y -= self.mediator.data.VELOCITY
 
-        if keys[pygame.K_DOWN] and self.player_2_rect.y - self.mediator.data.VELOCITY < 440:
+        if keys[self.mediator.data.player_2_controls.move_down] and self.player_2_rect.y - self.mediator.data.VELOCITY < 440:
             self.player_2_rect.y += self.mediator.data.VELOCITY
 
-        if keys[pygame.K_LEFT] and self.player_2_rect.x - self.mediator.data.VELOCITY > 470:
+        if keys[self.mediator.data.player_2_controls.move_left] and self.player_2_rect.x - self.mediator.data.VELOCITY > 470:
             self.player_2_rect.x -= self.mediator.data.VELOCITY
 
-        if keys[pygame.K_RIGHT] and self.player_2_rect.x + self.mediator.data.VELOCITY < 840:
+        if keys[self.mediator.data.player_2_controls.move_right] and self.player_2_rect.x + self.mediator.data.VELOCITY < 840:
             self.player_2_rect.x += self.mediator.data.VELOCITY            
 
     def fire_bullets(self, p1_bullets, p2_bullets):
@@ -83,11 +83,11 @@ class Display:
             pygame.draw.ellipse(self.SCREEN, self.mediator.data.p2_bullet, bullet)
 
     def check_winner(self):
-        if self.mediator.player1_health.current_health <=0:
+        if self.mediator.data.player1_health.current_health <=0:
             self.mediator.data.winner_text = "Player 2 Wins!"
             self.mediator.data.game = True
 
-        if self.mediator.player2_health.current_health <=0:
+        if self.mediator.data.player2_health.current_health <=0:
             self.mediator.data.winner_text = "Player 1 Wins!"
             self.mediator.data.game = True
 
