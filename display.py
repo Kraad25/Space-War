@@ -40,7 +40,6 @@ class Display:
         if keys[self.mediator.data.player_1_controls.move_right] and self.player_1_rect.x + self.mediator.data.VELOCITY < 380:
             self.player_1_rect.x += self.mediator.data.VELOCITY
 
-
     def player_2_move(self):
         keys = pygame.key.get_pressed()
 
@@ -102,8 +101,6 @@ class Display:
         bg_color = self.mediator.data.bg.get_at((self.mediator.data.WIDTH // 2 - 100, self.mediator.data.HEIGHT // 2 - 60))
         
         winner_img = self.mediator.data.WINNER_TEXT_FONT.render(self.mediator.data.winner_text, True, self.mediator.data.WINNER_TEXT_COLOR)
-
-       
         self.SCREEN.blit(winner_img, (self.mediator.data.WIDTH//2 - 100, self.mediator.data.HEIGHT//2 - 50))
     
         again_text = 'Play Again ?'

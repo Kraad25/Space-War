@@ -226,7 +226,6 @@ class Data:
         self.BULLET_FIRE_SOUND_P1 = pygame.mixer.Sound(os.path.join('assets', 'blaster.mp3'))
         self.BULLET_FIRE_SOUND_P2 = pygame.mixer.Sound(os.path.join('assets', 'plasmacannon.mp3'))
 
-
     def get_font(self, size):
         return pygame.font.Font("assets/font.ttf", size)
     
