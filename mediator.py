@@ -14,6 +14,8 @@ class Mediator:
 
         self.main_run = True
         self.game_run = True
+        self.controls_run = True
+
         self.bullet = None
         self.p1_bullets = []
         self.p2_bullets = []
@@ -36,18 +38,22 @@ class Mediator:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.main_run = False
+                    self.game_run = False
+                    self.controls_run = False
                     
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.data.PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.game_run = True
                         self.play()
                     if self.data.CONTROLS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.controls_run = True
                         self.controls()
                     if self.data.QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.main_run = False
+                        self.game_run = False
+                        self.controls_run = False
 
             pygame.display.update()
-        pygame.quit()
 
     def play(self):
         
@@ -79,42 +85,48 @@ class Mediator:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.data.PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                        self.main_menu()
                         self.game_run = False
+                        self.main_menu()
                         
+                        
+                if self.data.enable_control:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == self.data.player_1_controls.fire and len(self.p1_bullets) < self.data.MAX_BULLETS :
+                            self.bullet = pygame.Rect(
+                                (self.display.player_1_rect.x + self.data.WIDTH_OF_SPACESHIP), 
+                                (self.display.player_1_rect.y + self.data.HEGIHT_OF_SPACESHIP//2 -2),
+                                10, 5
+                                )
+                            self.p1_bullets.append(self.bullet)
+                            self.data.BULLET_FIRE_SOUND_P1.set_volume(0.1)
+                            self.data.BULLET_FIRE_SOUND_P1.play()
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == self.data.player_1_controls.fire and len(self.p1_bullets) < self.data.MAX_BULLETS :
-                        self.bullet = pygame.Rect(
-                            (self.display.player_1_rect.x + self.data.WIDTH_OF_SPACESHIP), 
-                            (self.display.player_1_rect.y + self.data.HEGIHT_OF_SPACESHIP//2 -2),
-                            10, 5
-                            )
-                        self.p1_bullets.append(self.bullet)
-                        self.data.BULLET_FIRE_SOUND_P1.play()
+                        if event.key == self.data.player_2_controls.fire and len(self.p2_bullets) < self.data.MAX_BULLETS :
+                            self.bullet = pygame.Rect(
+                                (self.display.player_2_rect.x - self.data.WIDTH_OF_SPACESHIP), 
+                                (self.display.player_2_rect.y + self.data.HEGIHT_OF_SPACESHIP//2 -2),
+                                10, 5
+                                )
+                            self.p2_bullets.append(self.bullet)
+                            self.data.BULLET_FIRE_SOUND_P2.set_volume(0.1)
+                            self.data.BULLET_FIRE_SOUND_P2.play()
 
-                    if event.key == self.data.player_2_controls.fire and len(self.p2_bullets) < self.data.MAX_BULLETS :
-                        self.bullet = pygame.Rect(
-                            (self.display.player_2_rect.x - self.data.WIDTH_OF_SPACESHIP), 
-                            (self.display.player_2_rect.y + self.data.HEGIHT_OF_SPACESHIP//2 -2),
-                            10, 5
-                            )
-                        self.p2_bullets.append(self.bullet)
-                        self.data.BULLET_FIRE_SOUND_P2.play()
-
-                if event.type == self.data.P1_HIT:
-                    self.data.player1_health.update(self.data.player1_health.current_health-1)
-                    self.data.BULLET_HIT_SOUND.play()
-                    
-                if event.type == self.data.P2_HIT:
-                    self.data.player2_health.update(self.data.player2_health.current_health-1)
-                    self.data.BULLET_HIT_SOUND.play()
+                    if event.type == self.data.P1_HIT:
+                        self.data.player1_health.update(self.data.player1_health.current_health-1)
+                        self.data.BULLET_HIT_SOUND.set_volume(0.5)
+                        self.data.BULLET_HIT_SOUND.play()
+                        
+                    if event.type == self.data.P2_HIT:
+                        self.data.player2_health.update(self.data.player2_health.current_health-1)
+                        self.data.BULLET_HIT_SOUND.set_volume(0.5)
+                        self.data.BULLET_HIT_SOUND.play()
 
             self.display.fire_bullets(self.p1_bullets, self.p2_bullets)
             self.display.show_bullets(self.p1_bullets, self.p2_bullets)
             self.display.check_winner()
             
             if self.data.game:
+
                 self.display.show_winner()
 
                 if event.type == pygame.MOUSEBUTTONDOWN and self.data.clicked == False:
@@ -134,10 +146,102 @@ class Mediator:
                             self.data.player2_start_x, 
                             self.data.player2_start_y
                             )
+                        self.data.enable_control = True
                         self.main_menu()
+
+            pygame.display.update()
+
+    def controls(self):
+        while self.controls_run:
+            CONTROLS_MOUSE_POS = pygame.mouse.get_pos()
+            self.display.SCREEN.blit(self.data.bg, (0, 0))
+
+            self.data.CONTROLS_BACK
+            self.data.CONTROLS_BACK.changeColor(CONTROLS_MOUSE_POS)
+            self.data.CONTROLS_BACK.update(self.display.SCREEN)
+
+            self.display.show_controls() 
+
+            for button in [
+                self.data.P1_UP_BUTTON, 
+                self.data.P1_DOWN_BUTTON, 
+                self.data.P1_LEFT_BUTTON, 
+                self.data.P1_RIGHT_BUTTON, 
+                self.data.P1_FIRE_BUTTON,
+                self.data.P2_UP_BUTTON, 
+                self.data.P2_DOWN_BUTTON, 
+                self.data.P2_LEFT_BUTTON, 
+                self.data.P2_RIGHT_BUTTON, 
+                self.data.P2_FIRE_BUTTON
+                ]:
+                button.changeColor(CONTROLS_MOUSE_POS)
+                button.update(self.display.SCREEN)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.main_run = False
+                    self.game_run = False
+                    self.controls_run = False
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.data.CONTROLS_BACK.checkForInput(CONTROLS_MOUSE_POS):
+                        self.controls_run = False
+                        self.main_menu()
+                        
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.data.P1_UP_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_1_controls.change_controls('move_up', new_key)
+                        self.data.P1_UP_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P1_DOWN_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_1_controls.change_controls('move_down', new_key)
+                        self.data.P1_DOWN_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P1_LEFT_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_1_controls.change_controls('move_left', new_key)
+                        self.data.P1_LEFT_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P1_RIGHT_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_1_controls.change_controls('move_right', new_key)
+                        self.data.P1_RIGHT_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P1_FIRE_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_1_controls.change_controls('fire', new_key)
+                        self.data.P1_FIRE_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P2_UP_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_2_controls.change_controls('move_up', new_key)
+                        self.data.P2_UP_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P2_DOWN_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_2_controls.change_controls('move_down', new_key)
+                        self.data.P2_DOWN_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P2_LEFT_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_2_controls.change_controls('move_left', new_key)
+                        self.data.P2_LEFT_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P2_RIGHT_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_2_controls.change_controls('move_right', new_key)
+                        self.data.P2_RIGHT_BUTTON.updateText(pygame.key.name(new_key))
+
+                    if self.data.P2_FIRE_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
+                        new_key = self.display.get_new_control_input()
+                        self.data.player_2_controls.change_controls('fire', new_key)
+                        self.data.P2_FIRE_BUTTON.updateText(pygame.key.name(new_key))
 
             pygame.display.update()
 
     def start_the_game(self):
         self.main_menu()
-
+        pygame.quit()

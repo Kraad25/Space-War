@@ -27,3 +27,11 @@ class Button():
 			self.text = self.font.render(self.text_input, True, self.hovering_color)
 		else:
 			self.text = self.font.render(self.text_input, True, self.base_color)
+
+	def updateText(self, new_text):
+		new_text = str(new_text)
+		
+		if new_text.isalpha():
+			new_text = new_text.upper()
+			
+		self.text_input = new_text

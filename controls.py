@@ -13,5 +13,14 @@ class Controls:
         self.move_right = move_right
         self.fire = fire
 
-    def change_controls(self, new_key):
-        pass
+    def change_controls(self, control_type, new_key):
+        if control_type == 'move_up':
+            self.move_up = new_key
+        elif control_type == 'move_down':
+            self.move_down = new_key
+        elif control_type == 'move_left':
+            self.move_left = new_key
+        elif control_type == 'move_right':
+            self.move_right = new_key
+        elif control_type == 'fire':
+            self.fire = new_key
