@@ -6,9 +6,13 @@ from data import Data
 
 class Mediator:
     def __init__(self):
-        pygame.init()    
+        pygame.init()   
+         
         self.data = Data(self)
         self.display = Display(self)
+
+        pygame.display.set_caption("Space Wars")
+        pygame.display.set_icon(self.data.icon)
 
         self.data.healthbars()
 
@@ -58,6 +62,11 @@ class Mediator:
     def play(self):
         
         clock = pygame.time.Clock()
+
+        for bullet in self.p1_bullets:
+            self.p1_bullets.remove(bullet)
+        for bullet in self.p2_bullets:
+            self.p2_bullets.remove(bullet)
         
         while self.game_run:
 
@@ -86,6 +95,23 @@ class Mediator:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.data.PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                         self.game_run = False
+                        self.data.game = False 
+                        self.data.winner_text = ""
+                        self.data.player1_health.update(10)
+                        self.data.player2_health.update(10)
+
+                        self.display.set_player_positions(
+                            self.data.player1_start_x, 
+                            self.data.player1_start_y, 
+                            self.data.player2_start_x, 
+                            self.data.player2_start_y
+                            )
+                        
+                        for bullet in self.p1_bullets:
+                            self.p1_bullets.remove(bullet)
+                        for bullet in self.p2_bullets:
+                            self.p2_bullets.remove(bullet)
+
                         self.main_menu()
                         
                         
@@ -126,6 +152,11 @@ class Mediator:
             self.display.check_winner()
             
             if self.data.game:
+
+                for bullet in self.p1_bullets:
+                     self.p1_bullets.remove(bullet)
+                for bullet in self.p2_bullets:
+                     self.p2_bullets.remove(bullet)
 
                 self.display.show_winner()
 

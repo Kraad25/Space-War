@@ -26,6 +26,8 @@ class Data:
 
         self.enable_control = True
 
+        self.icon = pygame.image.load("assets/ship_1.png")
+
         self.bg = pygame.image.load("assets/space.gif")
         self.bg = pygame.transform.scale(self.bg, (self.SIZE))
  
