@@ -1,4 +1,7 @@
-
+build/
+*.iss
+*.spec
+*.ico
 *.vsidx
 .vs/Space_War/v17/.suo
 *.md
